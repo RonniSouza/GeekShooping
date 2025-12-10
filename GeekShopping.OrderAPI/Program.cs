@@ -1,7 +1,6 @@
-using AutoMapper;
-using GeekShopping.CouponAPI.Config;
-using GeekShopping.CouponAPI.Model.Context;
-using GeekShopping.CouponAPI.Repository;
+using GeekShopping.CartAPI.Repository;
+using GeekShopping.OrderAPI.Model.Context;
+using GeekShopping.OrderAPI.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,8 +13,6 @@ using System.Collections.Generic;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 var connectionString = builder.Configuration.GetConnectionString("MySQlConnectionString");
 
 //var connection = builder.Configuration["MySqlConnection:MySqlConnectionString"];
@@ -25,11 +22,16 @@ builder.Services.AddDbContext<MySQLContext>(options => options.UseMySql(
     new MySqlServerVersion(new Version(8, 0, 44)))
 );
 
-IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
-builder.Services.AddSingleton(mapper);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+var builderDb =  new DbContextOptionsBuilder<MySQLContext>();
+builderDb.UseMySql(
+    connectionString,
+    new MySqlServerVersion(new Version(8, 0, 44))
+);
 
-builder.Services.AddScoped<ICouponRepository, CouponRepository>();
+builder.Services.AddSingleton(new OrderRepository(builderDb.Options));
+
+
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 builder.Services.AddControllers();
 
@@ -56,7 +58,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.CouponAPI", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.OrderAPI", Version = "v1" });
     c.EnableAnnotations();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -85,18 +87,18 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GeekShopping.CouponAPI v1"));
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-
-app.UseRouting();
 
 app.UseAuthentication();
 

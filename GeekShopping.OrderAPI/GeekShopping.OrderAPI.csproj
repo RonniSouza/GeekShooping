@@ -5,8 +5,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="10.1.1" />
-		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0-preview.6.21355.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0-preview.6.21352.1">
 			<PrivateAssets>all</PrivateAssets>
@@ -20,7 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\GeekShoppingMessageBus\GeekShoppingMessageBus.csproj" />
+		<ProjectReference Include="..\GeekShoppingMessageBus\GeekShoppingMessageBus.csproj" />
 	</ItemGroup>
 
 </Project>

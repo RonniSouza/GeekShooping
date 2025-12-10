@@ -25,6 +25,16 @@ namespace GeekShopping.CouponAPI.Migrations
                     table.PrimaryKey("PK_coupon", x => x.id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.InsertData(
+                table: "coupon",
+                columns: new[] { "id", "coupon_code", "discount_amount" },
+                values: new object[] { 1L, "Promo_2022_10", 10m });
+
+            migrationBuilder.InsertData(
+                table: "coupon",
+                columns: new[] { "id", "coupon_code", "discount_amount" },
+                values: new object[] { 2L, "Promo_2022_15", 15m });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

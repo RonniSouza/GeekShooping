@@ -2,9 +2,11 @@
 using AutoMapper;
 using GeekShopping.CartAPI.Config;
 using GeekShopping.CartAPI.Model.Context;
+using GeekShopping.CartAPI.RabbitMQSender;
 using GeekShopping.CartAPI.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
@@ -16,26 +18,27 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-var connection = builder.Configuration["MySQlConnection:MySQlConnectionString"];
+var connectionString = builder.Configuration.GetConnectionString("MySQlConnectionString");
+
+//var connection = builder.Configuration["MySqlConnection:MySqlConnectionString"];
 
 builder.Services.AddDbContext<MySQLContext>(options => options.UseMySql(
-    connection,
-        new MySqlServerVersion(
-            new Version(8, 0, 29))));
+    connectionString,
+    new MySqlServerVersion(new Version(8, 0, 44)))
+);
 
 IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<ICartRepository, CartRepository>();
-//builder.Services.AddScoped<ICouponRepository, CouponRepository>();
 
-//builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQMessageSender>();
+builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQMessageSender>();
 
 builder.Services.AddControllers();
 
 //builder.Services.AddHttpClient<ICouponRepository, CouponRepository>(s => s.BaseAddress =
-    //new Uri(builder.Configuration["ServiceUrls:CouponAPI"]));
+//    new Uri(builder.Configuration["ServiceUrls:CouponAPI"]));
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
