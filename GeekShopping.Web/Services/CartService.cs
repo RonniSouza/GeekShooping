@@ -34,7 +34,13 @@ namespace GeekShopping.Web.Services
             var response = await _client.PostAsJson($"{BasePath}/add-cart", model);
             if (response.IsSuccessStatusCode)
                 return await response.ReadContentAs<CartViewModel>();
-            else throw new Exception("Something went wrong when calling API");
+            //else throw new Exception("Something went wrong when calling API");
+            else
+            {
+                var msg = await response.Content.ReadAsStringAsync();
+                throw new Exception($"API ERROR ({response.StatusCode}): {msg}");
+            }
+
         }
 
         public async Task<CartViewModel> UpdateCart(CartViewModel model, string token)

@@ -41,13 +41,13 @@ namespace GeekShopping.CouponAPI.Migrations
                         new
                         {
                             Id = 1L,
-                            CouponCode = "ERUDIO_2022_10",
+                            CouponCode = "Promo_2022_10",
                             DiscountAmount = 10m
                         },
                         new
                         {
                             Id = 2L,
-                            CouponCode = "ERUDIO_2022_15",
+                            CouponCode = "Promo_2022_15",
                             DiscountAmount = 15m
                         });
                 });
